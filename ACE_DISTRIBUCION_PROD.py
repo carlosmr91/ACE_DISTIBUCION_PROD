@@ -60,10 +60,10 @@ def process_data(df_loaded):
         
     #Crear dataframe de la producción diaria por disparo a la fecha maxima del OFM
     df_prod_diaria_xdisparo = df_fecha_corte_OFM.groupby(["POZO", "POZO ID", "ZONA","WGS84_UTMX_OBJETIVO", "WGS84_UTMY_OBJETIVO",'FECHA'])[['ACEITE DIARIO BPD', 'AGUA DIARIA BPD', 
-                                                            'GAS DIARIO MMcfd']].max().reset_index()
+                                                            'GAS DIARIO MMcfd','RGA pcb']].max().reset_index()
     # Totalizar los la producion diaria por pozo
     df_diaria_totalizada = df_prod_diaria_xdisparo.groupby(["POZO", "ZONA","WGS84_UTMX_OBJETIVO", "WGS84_UTMY_OBJETIVO",'FECHA'])[['ACEITE DIARIO BPD', 'AGUA DIARIA BPD', 
-                                                            'GAS DIARIO MMcfd']].sum().reset_index()
+                                                            'GAS DIARIO MMcfd','RGA pcb']].sum().reset_index()
         
     #df_integral = pd.merge(df_acumulada_totalizada, df_diaria_totalizada, on=["POZO", "ZONA"], how="inner")
     
@@ -465,7 +465,9 @@ def main():
                         figQg_diario = plot_density_map(df_data_selection_diaria, df_pozos, "GAS DIARIO MMcfd", polygon_lats, polygon_lons, 'turbo', zoom)
                         st.plotly_chart(figQg_diario, use_container_width=True, key="figQg_diario_key") 
                         st.plotly_chart(fig_histogram_Qg, use_container_width=True, key="fig_histogram_Qg_key")
-                        selected_columnsQg = ["POZO", "ZONA", 'FECHA', 'GAS DIARIO MMcfd']
+                        selected_columnsQg = ["POZO", "ZONA", 'FECHA', 'GAS DIARIO MMcfd','RGA pcb']
+                        df_data_selection_diaria["RGA Mpcb"] = (df_data_selection_diaria["RGA pcb"] / 1000)
+                        selected_columnsQg.append("RGA Mpcb")
                         st.write(df_data_selection_diaria[selected_columnsQg])            
             
     
